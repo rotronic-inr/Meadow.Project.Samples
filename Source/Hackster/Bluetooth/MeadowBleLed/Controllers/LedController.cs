@@ -1,8 +1,10 @@
-﻿using Meadow;
+﻿using Meadow.Foundation;
 using Meadow.Foundation.Leds;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Meadow;
+using Meadow.Peripherals.Leds;
 
 namespace MeadowBleLed.Controller
 {
@@ -25,9 +27,10 @@ namespace MeadowBleLed.Controller
         private void Initialize()
         {
             rgbPwmLed = new RgbPwmLed(
-                redPwmPin: MeadowApp.Device.Pins.D12,
-                greenPwmPin: MeadowApp.Device.Pins.D11,
-                bluePwmPin: MeadowApp.Device.Pins.D10);
+                redPwmPin: MeadowApp.Device.Pins.OnboardLedRed,
+                greenPwmPin: MeadowApp.Device.Pins.OnboardLedGreen,
+                bluePwmPin: MeadowApp.Device.Pins.OnboardLedBlue,
+                CommonType.CommonAnode);
         }
 
         void Stop()
@@ -94,7 +97,10 @@ namespace MeadowBleLed.Controller
         protected Color GetRandomColor()
         {
             var random = new Random();
-            return Color.FromHsba(random.NextDouble(), 1, 1);
+            var randomBytes = new byte[3];
+            random.NextBytes(randomBytes);
+            var randomColor = Color.FromRgb(randomBytes[0], randomBytes[1], randomBytes[2]);
+            return randomColor;
         }
     }
 }

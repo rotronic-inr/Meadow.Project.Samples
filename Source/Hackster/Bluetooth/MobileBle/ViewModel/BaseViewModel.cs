@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Microsoft.Maui.ApplicationModel;
+using MobileBle.Services;
 
 namespace MobileBle.ViewModel
 {
@@ -95,8 +97,20 @@ namespace MobileBle.ViewModel
 
         async Task DiscoverDevices()
         {
+            var permissionService = new PermissionService();
+
             try
             {
+                if (await permissionService.RequestMissingPermissionsAsync() == false)
+                {
+                    return;
+                }
+
+                if (await permissionService.RequestLocationAlwaysAsync() == false)
+                {
+                    return;
+                }
+
                 IsScanning = true;
 
                 var tasks = new Task[]
